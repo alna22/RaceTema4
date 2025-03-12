@@ -634,7 +634,17 @@ print(paste("Segundo:", second_value))
 ```
 40. La librería `lubridate` dispone de múltiples funciones para importar en formato fecha datos con un gran variedad de formatos de entrada `ymd(), dmy(), hms(), ymd_hms()` donde cada letra indica _years (y),months (m), days (d), hours (h), minutes (m), y seconds (s)_. Prueba my_date <- ymd("2019-02-14"), y determina de que clase es `my_date`. Las funciones son muy robustas y pueden intepretar correctamente diversos formato. Prueba `ymd()` para importar la fecha  __"1989 May 17"__. ¿Cómo importarías __"March 12, 1975"__?
 ```{r}
+library(lubridate)
 
+my_date <- ymd("2019-02-14")
+print(my_date)
+class(my_date)
+
+date1 <- ymd("1989 May 17")
+date1
+
+date2 <- mdy("March 12, 1975")
+date2
 
 
 ```
@@ -642,14 +652,27 @@ print(paste("Segundo:", second_value))
 ```{r}
 fecha<-'19200102'
 ymd(fecha)
+library(lubridate)
 
+fecha1 <- dmy("25081985")
+fecha1
+
+
+fecha2 <- ymd("1920-12-01")  
+fecha2
 
 
 
 ```
 42. Almacena la cadena `2014-08-23 17:23:02` en la variable `dt1`  e impórtala para que incluya la fecha y la hora,posteriormente importa la cadena `"03:22:14"` (hh:mm:ss)
 ```{r}
+library(lubridate)
 
+dt1 <- ymd_hms("2014-08-23 17:23:02")
+print(dt1)
+
+dt2 <- hms("03:22:14")
+print(dt2)
 
 
 
