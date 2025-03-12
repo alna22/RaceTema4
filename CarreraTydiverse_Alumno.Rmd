@@ -520,7 +520,15 @@ print(gradebook)
 ```
 34. Consideremos el caso de una observación almacenada en varias tablas. Observa los datos almacenados en `failed` y `passed` con la información de los alumnos que suspeden (calificaciones C,D,E,F) y los que aprueban (calificaciones A, B). Debes unir ambos conjuntos en uno que contenga una columna adicional llamada `status` que indicará `passed` o `failed` según la situación de cada alumno, puedes usar la función `bind_rows`.
 ```{r}
+library(dplyr)
 
+failed <- failed %>% mutate(status = "failed")
+
+passed <- passed %>%mutate(status = "passed")
+
+students <- bind_rows(failed, passed)
+
+print(students)
 
 
 ```
@@ -531,7 +539,12 @@ Considera los datos almacenado en `sat` y haz las transformaciones adecuadas par
 
 ```{r}
 
+library(dplyr)
+library(tidyr)
 
+sat_tidy <- sat %>%pivot_longer(cols = -score_range, names_to = c("part", "sex"),  names_sep = "_", values_to = "count")
+
+sat_tidy
 
 
 
@@ -541,7 +554,13 @@ Considera los datos almacenado en `sat` y haz las transformaciones adecuadas par
 36. Utiliza agrupamientos, según las variables `part, sex` y genera dos nuevas columnas que contengan el número total de estudiantes en dicho grupo, y la proporción dentro del grupo. Almacénalas en las variables `total y prop` respectivamente.
 ```{r}
 
+library(dplyr)
 
+sat_tidy <- sat_tidy %>%
+  group_by(part, sex) %>%
+  mutate(total = sum(count, na.rm = TRUE)) %>%
+  mutate(prop = count / total)
+sat_tidy
 
 
 
