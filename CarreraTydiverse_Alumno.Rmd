@@ -467,7 +467,13 @@ print(students2_tidy)
 ```
 31. Considera el conjunto `students3` y observa por qué no es un `tidy data` . Las variables finales del conjunto deberían ser: `name, class, midterm, final`. Dado que un alumno solo puede estar en una de las clases aparecen muchos `NA`, al reorganizar, usa `na.rm=TRUE` en las opciones de `gather`
 ```{r}
+library(tidyr)
+library(dplyr)
 
+students3_tidy <- students3 %>%
+pivot_longer(cols = -name,names_to = c("class", "exam"),names_sep = "_", values_drop_na = TRUE)
+
+print(students3_tidy)
 
 
 
@@ -475,7 +481,15 @@ print(students2_tidy)
 32. Considera que la columna `class` queremos especificarla con valores, 1,2,3,4 y 5 en lugar de class1, ..., class5. En librería de importación de datos (`readr`) se proporcionan funciones que permite identificar y extraer diversos tipos de datos. Son las funciones `parse_XXXX`. Observa el efecto de aplicar `parse_number('class5')` y utiliza el resultado para realizar la tarea solicitada.
 
 ```{r}
+library(tidyr)
+library(dplyr)
+library(readr) 
 
+students3_tidy <- students3 %>%
+  pivot_longer(cols = -name,names_to = c("class", "exam"),names_sep = "_",values_drop_na = TRUE) %>%
+  mutate(class = parse_number(class)) 
+
+print(students3_tidy)
 
 
 
@@ -484,7 +498,17 @@ print(students2_tidy)
 ```
 33. Observa el conjunto `students4` donde se presenta el problema de tener varias observaciones en la misma tabla. Separa el conjunto en dos tablas, una que contenga información relativa a los estudiantes, que llamarás `student_info`, que no debe contener repeticiones, y otra con las calificaciones y la clave primaria que enlaza ambas tablas(`id`), que llamarás `gradebook`.
 ```{r}
+library(dplyr)
 
+student_info <- students4 %>%
+  group_by(id, name, sex) %>%
+  summarise(.groups = "drop")  
+
+gradebook <- students4 %>%
+  select(id, class, midterm, final)
+
+print(student_info)
+print(gradebook)
 
 
 
