@@ -401,7 +401,22 @@ cran %>%group_by(country) %>%  summarise(total_traffic = sum(size, na.rm = TRUE)
  + Representa un diagrama de barras con el flujo de datos, por continente, ordenados de mayor a menor. Expresa el flujo de datos en Terabytes (1Tb=2^40bytes)
  
 ```{r}
+library(readr)  
+code_paises <- read_csv("GeoLite2-Country-Locations-es.csv", locale = locale(encoding = "UTF-8"))
+glimpse(code_paises)
 
+cran <- cran %>%
+  filter(!is.na(country) & country != "")  
+code_paises <- code_paises %>%
+  filter(!is.na(country_iso_code) & country_iso_code != "")  
+
+cran_continentes <- cran %>% inner_join(select(code_paises, country_iso_code, continent_name), by = c("country" = "country_iso_code"))
+
+tráfico_continentes <- cran_continentes %>%group_by(continent_name)%>%summarise(total_TB = sum(size, na.rm = TRUE) / 2^40) %>%arrange(desc(total_TB)) 
+
+library(ggplot2)
+
+tráfico_continentes %>%ggplot(aes(x = reorder(continent_name, -total_TB), y = total_TB)) +geom_bar(stat = "identity", fill = "steelblue") + labs(x = "Continente", y = "Tráfico Total (TB)", title = "Tráfico de Descargas por Continente") +theme_minimal() +theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 
 
@@ -430,13 +445,22 @@ Carga el fichero de datos `datostidyr.Rdata` que contiene varios conjuntos de da
 La columna `grade` es la calificación y las dos siguientes el número de estudiantes hombre y mujer que han recibido dicha calificación.
 ¿ Cuáles son las variables ?. Transfórmalo en un conjunto `tidy` con las variables, `grade, sex y count`
 ```{r}
+load("data/datostidyr.Rdata") 
+library(tidyr)
+library(dplyr)
 
+students_tidy <- students %>% pivot_longer(cols = c(male, female),  names_to = "sex",values_to = "count")
 
 
 ```
 30. Considera el conjunto ´students2´, que es similar al primero pero que se han recogido datos correspondientes a dos grupos, (`male_1, female_1`, etc). Transfórmalo en un conjunto `tidy` añadiendo una columna adicional correspondiente al grupo (llama a la nueva variable `class`)
 ```{r}
+library(tidyr)
+library(dplyr)
 
+students2_tidy <- students2 %>%pivot_longer(cols = -grade, names_to = c("sex", "class"),names_pattern = "(male|female)_(\\d)",values_to = "count")  
+
+print(students2_tidy)
 
 
 
